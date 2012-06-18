@@ -22,8 +22,14 @@ todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorag
   var todos = $scope.todos = todoStorage.get();
 
   $scope.newTodo = "";
-  $scope.remainingCount = filterFilter(todos, {completed: false}).length;
   $scope.editedTodo = null;
+
+  $scope.$watch('todos', function() {
+    $scope.remainingCount = filterFilter(todos, {completed: false}).length;
+    $scope.doneCount = todos.length - $scope.remainingCount;
+    $scope.allChecked = !$scope.remainingCount
+    todoStorage.put(todos);
+  }, true);
 
   if ( $location.path() === '' ) $location.path('/');
   $scope.location = $location;
@@ -34,19 +40,14 @@ todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorag
         { completed: true } : null;
   });
 
-  $scope.$watch( 'remainingCount == 0', function( val ) {
-    $scope.allChecked = val;
-  });
-
 
   $scope.addTodo = function() {
-    if ($scope.newTodo.length === 0) return;
+    if ( !$scope.newTodo.length ) return;
 
     todos.push({
       title: this.newTodo,
       completed: false
     });
-    todoStorage.put(todos);
 
     this.newTodo = '';
   };
@@ -57,21 +58,13 @@ todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorag
   };
 
 
-  $scope.doneEditing = function( ) {
-    todoStorage.put(todos);
+  $scope.doneEditing = function( todo ) {
     $scope.editedTodo = null;
   };
 
 
   $scope.removeTodo = function(todo) {
     todos.splice(todos.indexOf(todo), 1);
-    todoStorage.put(todos);
-  };
-
-
-  $scope.todoCompleted = function(todo) {
-    todo.completed ? $scope.remainingCount-- : $scope.remainingCount++;
-    todoStorage.put(todos);
   };
 
 
@@ -79,8 +72,6 @@ todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorag
     $scope.todos = todos = todos.filter(function(val) {
       return !val.completed;
     });
-    $scope.remainingCount = todos.length;
-    todoStorage.put(todos);
   };
 
 
@@ -88,7 +79,5 @@ todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorag
     todos.forEach(function( todo ) {
       todo.completed = done;
     });
-    $scope.remainingCount = done ? 0 : todos.length;
-    todoStorage.put(todos);
   };
 });
