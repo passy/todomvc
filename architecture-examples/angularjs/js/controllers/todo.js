@@ -60,6 +60,7 @@ todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorag
 
   $scope.doneEditing = function( todo ) {
     $scope.editedTodo = null;
+    if ( !todo.title ) $scope.removeTodo(todo);
   };
 
 

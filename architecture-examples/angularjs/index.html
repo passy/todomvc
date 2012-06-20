@@ -29,8 +29,8 @@
             <label>{{todo.title}}</label>
             <button class="destroy" ng-click="removeTodo(todo)"></button>
           </div>
-          <form ng-submit="doneEditing()">
-            <input class="edit" ng-model="todo.title" todo-blur="doneEditing()" todo-focus="todo == editedTodo">
+          <form ng-submit="doneEditing(todo)">
+            <input class="edit" ng-model="todo.title" todo-blur="doneEditing(todo)" todo-focus="todo == editedTodo">
           </form>
         </li>
       </ul>
