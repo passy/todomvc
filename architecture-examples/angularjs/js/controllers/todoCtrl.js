@@ -1,23 +1,9 @@
-/* App Controllers */
-
-var todomvc = angular.module('todomvc', []);
-
-
-todomvc.factory( 'todoStorage', function() {
-  var STORAGE_ID = 'todos-angularjs';
-
-  return {
-    get: function() {
-      return JSON.parse(localStorage.getItem(STORAGE_ID) || '[]');
-    },
-
-    put: function( todos ) {
-      localStorage.setItem(STORAGE_ID, JSON.stringify(todos));
-    }
-  };
-});
-
-
+/**
+ * The main controller for the app. The controller:
+ * - retrieves and persist the model via the todoStorage service
+ * -
+ * exposes the model to the template and
+ */
 todomvc.controller( 'TodoCtrl', function TodoCtrl( $scope, $location, todoStorage, filterFilter ) {
   var todos = $scope.todos = todoStorage.get();
 
