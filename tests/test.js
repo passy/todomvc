@@ -4,15 +4,16 @@ var casper = require('casper').create();
 
 // TODO: Launch a local server from the test runner.
 
-// KO : http://localhost:8000/architecture-examples/spine/
-// OK : http://localhost:8000/architecture-examples/angularjs/
-// OK : http://localhost:8000/architecture-examples/angularjs-perf/
-// KO : http://localhost:8000/architecture-examples/backbone/
-// KO : http://localhost:8000/architecture-examples/emberjs/
-// KO : http://localhost:8000/architecture-examples/gwt/
-// OK : http://localhost:8000/architecture-examples/jquery/
-// OK (after the pullrequest ;) : http://localhost:8000/architecture-examples/dart/web/
-// var URL = 'http://localhost:8000/architecture-examples/angularjs/';
+// KO : spine/
+// OK : angularjs/
+// OK : angularjs-perf/
+// KO : backbone/
+// KO : emberjs/
+// KO : gwt/
+// OK : jquery/
+// OK : dart/web/
+
+//var URL = '../architecture-examples/angularjs/index.html';
 var URL = casper.cli.get(0);
 
 // TODO remove ?
@@ -107,12 +108,9 @@ casper.then(function () {
 
 	this.test.assertNotVisible('#clear-completed', '#clear-completed button is hidden');
 
-	// __utils__.findOne('').click();
-	this.evaluate(function() {
-		document.querySelector('#todo-list li:nth-child(2) input[type=checkbox]').click();
-	});
+	this.click('#todo-list li:nth-child(2) input[type=checkbox]');
 
-		this.assertLeftItemsString('2 items left', 'Todo #2 has been completed, left todo list count is 2');
+	this.assertLeftItemsString('2 items left', 'Todo #2 has been completed, left todo list count is 2');
 
 	// TODO check button string
 	this.test.assertVisible('#clear-completed', '#clear-completed button is displayed');
@@ -122,9 +120,7 @@ casper.then(function () {
 
 // Remove completed todo
 casper.then(function () {
-	this.evaluate(function() {
-		document.querySelector('#clear-completed').click();
-	});
+	this.click('#clear-completed');
 
 	this.assertLeftItemsString('2 items left', 'Todo #2 has been removed, left todo list count is still 2');
 
@@ -137,50 +133,38 @@ casper.then(function () {
 
 // Complete all todos
 casper.then(function () {
-	this.evaluate(function() {
-		document.querySelector('#toggle-all').click();
-	});
+	this.click('#toggle-all');
 
 	this.assertLeftItemsString('0 items left', 'All todos completed, left list count is 0');
 });
 
 // Undo one completed todo and re-complete all todos
 casper.then(function () {
-	this.evaluate(function() {
-		document.querySelector('#todo-list li:nth-child(2) input[type=checkbox]').click();
-	});
+	this.click('#todo-list li:nth-child(2) input[type=checkbox]');
 
 	this.assertLeftItemsString('1 item left', 'Todo #2 un-completed, left list count is 1');
 
-	this.evaluate(function() {
-		document.querySelector('#toggle-all').click();
-	});
+	this.click('#toggle-all');
 
 	this.assertLeftItemsString('0 items left', 'All todos completed, left list count is 0');
 });
 
 // Undo all completed todo
 casper.then(function () {
-	this.evaluate(function() {
-		document.querySelector('#toggle-all').click();
-	});
+	this.click('#toggle-all');
 
 	this.assertLeftItemsString('2 items left', 'All todos un-completed, left list count is 2');
 });
 
 // Complete all one by one and check toggle-all button uncomplete them all
 casper.then(function () {
-	this.evaluate(function() {
-		document.querySelector('#todo-list li:nth-child(1) input[type=checkbox]').click();
-		document.querySelector('#todo-list li:nth-child(2) input[type=checkbox]').click();
-	});
+	this.click('#todo-list li:nth-child(1) input[type=checkbox]');
+	this.click('#todo-list li:nth-child(2) input[type=checkbox]');
 
 	// TODO checkbox should be checked
 	this.assertLeftItemsString('0 items left', 'All todos completed one by one, left list count is 0');
 
-	this.evaluate(function() {
-		document.querySelector('#toggle-all').click();
-	});
+	this.click('#toggle-all');
 
 	this.assertLeftItemsString('2 items left', 'All todos un-completed, left list cound is 2');
 });
