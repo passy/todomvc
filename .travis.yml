@@ -11,5 +11,4 @@ before_script:
 script:
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/angularjs/index.html"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/jquery/index.html"
- - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/spine/index.html"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/dart/web/index.html"
