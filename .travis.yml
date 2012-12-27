@@ -1,2 +1,5 @@
+branches:
+  only:
+    - casperjs
 script:
   - "./bin/casperjs tests/test.js"
