@@ -10,7 +10,7 @@ var casper = require('casper').create();
 // KO : http://localhost:8000/architecture-examples/backbone/
 // KO : http://localhost:8000/architecture-examples/emberjs/
 // KO : http://localhost:8000/architecture-examples/gwt/
-// KO : http://localhost:8000/architecture-examples/jquery/
+// OK : http://localhost:8000/architecture-examples/jquery/
 // OK (after the pullrequest ;) : http://localhost:8000/architecture-examples/dart/web/
 var URL = 'http://localhost:8000/architecture-examples/angularjs/';
 
@@ -37,7 +37,10 @@ casper.addTodo = function(title) {
 
 // TODO find why most times useless
 casper.clean = function() {
-		this.evaluate(function() {
+	this.evaluate(function() {
+		document.querySelector('#clear-completed').click();
+	});
+	this.evaluate(function() {
 		document.querySelector('#toggle-all').click();
 	});
 	this.evaluate(function() {
