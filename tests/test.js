@@ -12,7 +12,7 @@ var casper = require('casper').create();
 // KO : http://localhost:8000/architecture-examples/gwt/
 // KO : http://localhost:8000/architecture-examples/jquery/
 // OK (after the pullrequest ;) : http://localhost:8000/architecture-examples/dart/web/
-var URL = 'http://localhost:8000/architecture-examples/dart/web/';
+var URL = 'http://localhost:8000/architecture-examples/angularjs/';
 
 // TODO remove ?
 function removeMultipleSpaces(str) {
@@ -35,7 +35,19 @@ casper.addTodo = function(title) {
 //casper.assertLeftItems = function(leftItemsNumber, message) {
 //};
 
+// TODO find why most times useless
+casper.clean = function() {
+		this.evaluate(function() {
+		document.querySelector('#toggle-all').click();
+	});
+	this.evaluate(function() {
+		document.querySelector('#clear-completed').click();
+	});
+};
+
 casper.start(URL, function () {
+	this.clean();
+
 	this.test.assertTitleMatch(/TodoMVC$/, 'Page title contains TodoMVC');
 
 	this.test.assertEval(function () {
@@ -165,6 +177,7 @@ casper.then(function () {
 		document.querySelector('#todo-list li:nth-child(2) input[type=checkbox]').click();
 	});
 
+	// TODO checkbox should be checked
 	this.test.assertEquals(this.fetchText('#todo-count strong'), '0', 'All todos completed one by one, left list count is 0');
 
 	this.evaluate(function() {
