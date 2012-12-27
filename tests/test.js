@@ -12,7 +12,8 @@ var casper = require('casper').create();
 // KO : http://localhost:8000/architecture-examples/gwt/
 // OK : http://localhost:8000/architecture-examples/jquery/
 // OK (after the pullrequest ;) : http://localhost:8000/architecture-examples/dart/web/
-var URL = 'http://localhost:8000/architecture-examples/angularjs/';
+// var URL = 'http://localhost:8000/architecture-examples/angularjs/';
+var URL = '../../todomvc/architecture-examples/dart/web/index.html';
 
 // TODO remove ?
 function removeMultipleSpaces(str) {
