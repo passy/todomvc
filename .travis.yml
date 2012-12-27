@@ -9,6 +9,4 @@ before_script:
  - cd ./bin
 
 script:
- - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/angularjs/"
- - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/jquery/"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/dart/web/"
