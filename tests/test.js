@@ -1,30 +1,8 @@
 
 var casper = require('casper').create();
-// var __utils__ = require('clientutils').create();
 
-// TODO: Launch a local server from the test runner.
-
-// KO : spine/
-// OK : angularjs/
-// OK : angularjs-perf/
-// KO : backbone/
-// KO : emberjs/
-// KO : gwt/
-// OK : jquery/
-// OK : dart/web/
-
-//var URL = '../architecture-examples/angularjs/index.html';
+// test URL : '../architecture-examples/angularjs/index.html';
 var URL = casper.cli.get(0);
-
-// TODO remove ?
-function removeMultipleSpaces(str) {
-	var result = str.replace(/  /g, ' ');
-	if(result == str) {
-		return result;
-	} else {
-		return removeMultipleSpaces(result);
-	}
-}
 
 casper.addTodo = function(title) {
 	// TODO about initial focus testing
@@ -41,7 +19,7 @@ casper.assertItemCount = function(itemsNumber, message) {
 }
 
 casper.assertLeftItemsString = function(leftItemsString, message) {
-	var displayedString = removeMultipleSpaces(this.fetchText('#todo-count').replace(/\n/g, '').trim());
+	var displayedString = this.fetchText('#todo-count').replace(/\n/g, '').replace(/\s{2,}/g, ' ').trim();
 	this.test.assertEquals(displayedString, leftItemsString, message);
 };
 
