@@ -36,6 +36,7 @@ casper.addTodo = function(title) {
 //};
 
 // TODO find why most times useless
+// TODO remove localstorage instead
 casper.clean = function() {
 	this.evaluate(function() {
 		document.querySelector('#clear-completed').click();
