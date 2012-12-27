@@ -15,4 +15,4 @@ before_script:
  - cd ./bin
 
 script:
- - "DISPLAY=:99.0 ./casperjs tests/test.js"
+ - "DISPLAY=:99.0 ./casperjs ../tests/test.js"
