@@ -12,3 +12,4 @@ script:
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/angularjs/index.html"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/jquery/index.html"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/dart/web/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/backbone/index.html"
