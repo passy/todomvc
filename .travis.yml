@@ -9,7 +9,12 @@ before_script:
  - cd ./bin
 
 script:
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/agilityjs/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/angularjs-perf/index.html"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/angularjs/index.html"
- - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/jquery/index.html"
- - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/dart/web/index.html"
  - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/backbone/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/canjs/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/dart/web/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/jquery/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/knockback/index.html"
+ - "./casperjs ../../todomvc/tests/test.js ../../todomvc/architecture-examples/knockoutjs/index.html"
