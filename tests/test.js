@@ -18,9 +18,17 @@ casper.assertItemCount = function(itemsNumber, message) {
 	}, message, {itemsNumber: itemsNumber});
 }
 
-casper.assertLeftItemsString = function(leftItemsString, message) {
+casper.assertLeftItemsCount = function(count, message) {
 	var displayedString = this.fetchText('#todo-count').replace(/\n/g, '').replace(/\s{2,}/g, ' ').trim();
-	this.test.assertEquals(displayedString, leftItemsString, message);
+	var leftItemsString = count + ' item' + (count !== 1 ? 's' : '') + ' left';
+
+	if (count === 0) {
+		if (displayedString.length > 1 && displayedString !== leftItemsString) {
+			this.test.fail(message);
+		}
+	} else {
+		this.test.assertEquals(displayedString, leftItemsString, message);
+	}
 };
 
 // TODO find why most times useless
@@ -44,7 +52,7 @@ casper.start(URL, function () {
 
 	this.assertItemCount(0 , 'No todo at start');
 
-	this.assertLeftItemsString('0 items left', 'Left todo list count is 0');
+	this.assertLeftItemsCount(0, 'Left todo list count is 0');
 
 	this.test.assertNotVisible('#main', '#main section is hidden');
 	this.test.assertNotVisible('#toggle-all', '#toggle-all checkbox is hidden');
@@ -57,7 +65,7 @@ casper.then(function () {
 
 	this.assertItemCount(1, 'One todo has been added, list contains 1 item');
 
-	this.assertLeftItemsString('1 item left', 'Left todo list count is 1');
+	this.assertLeftItemsCount(1, 'Left todo list count is 1');
 
 	this.test.assertEquals(this.fetchText('#todo-list li:first-child label'), 'Some Task', 'First todo is "Some Task"');
 
@@ -73,7 +81,7 @@ casper.then(function () {
 
 	this.assertItemCount(2, 'A second todo has been added, list contains 2 items');
 
-	this.assertLeftItemsString('2 items left', 'Left todo list count is 2');
+	this.assertLeftItemsCount(2, 'Left todo list count is 2');
 
 	this.test.assertEquals(this.fetchText('#todo-list li:nth-child(2) label'), 'Some Another Task', 'Second todo is "Some Another Task"');
 });
@@ -82,13 +90,13 @@ casper.then(function () {
 casper.then(function () {
 	this.addTodo('A Third Task');
 
-	this.assertLeftItemsString('3 items left', 'One todo has been added, left todo list count is 3');
+	this.assertLeftItemsCount(3, 'One todo has been added, left todo list count is 3');
 
 	this.test.assertNotVisible('#clear-completed', '#clear-completed button is hidden');
 
 	this.click('#todo-list li:nth-child(2) input[type=checkbox]');
 
-	this.assertLeftItemsString('2 items left', 'Todo #2 has been completed, left todo list count is 2');
+	this.assertLeftItemsCount(2, 'Todo #2 has been completed, left todo list count is 2');
 
 	// TODO check button string
 	this.test.assertVisible('#clear-completed', '#clear-completed button is displayed');
@@ -100,7 +108,7 @@ casper.then(function () {
 casper.then(function () {
 	this.click('#clear-completed');
 
-	this.assertLeftItemsString('2 items left', 'Todo #2 has been removed, left todo list count is still 2');
+	this.assertLeftItemsCount(2, 'Todo #2 has been removed, left todo list count is still 2');
 
 	this.test.assertEquals(this.fetchText('#todo-list li:nth-child(2) label'), 'A Third Task', 'Second left todo is previous third one');
 
@@ -113,25 +121,25 @@ casper.then(function () {
 casper.then(function () {
 	this.click('#toggle-all');
 
-	this.assertLeftItemsString('0 items left', 'All todos completed, left list count is 0');
+	this.assertLeftItemsCount(0, 'All todos completed, left list count is 0');
 });
 
 // Undo one completed todo and re-complete all todos
 casper.then(function () {
 	this.click('#todo-list li:nth-child(2) input[type=checkbox]');
 
-	this.assertLeftItemsString('1 item left', 'Todo #2 un-completed, left list count is 1');
+	this.assertLeftItemsCount(1, 'Todo #2 un-completed, left list count is 1');
 
 	this.click('#toggle-all');
 
-	this.assertLeftItemsString('0 items left', 'All todos completed, left list count is 0');
+	this.assertLeftItemsCount(0, 'All todos completed, left list count is 0');
 });
 
 // Undo all completed todo
 casper.then(function () {
 	this.click('#toggle-all');
 
-	this.assertLeftItemsString('2 items left', 'All todos un-completed, left list count is 2');
+	this.assertLeftItemsCount(2, 'All todos un-completed, left list count is 2');
 });
 
 // Complete all one by one and check toggle-all button uncomplete them all
@@ -140,11 +148,11 @@ casper.then(function () {
 	this.click('#todo-list li:nth-child(2) input[type=checkbox]');
 
 	// TODO checkbox should be checked
-	this.assertLeftItemsString('0 items left', 'All todos completed one by one, left list count is 0');
+	this.assertLeftItemsCount(0, 'All todos completed one by one, left list count is 0');
 
 	this.click('#toggle-all');
 
-	this.assertLeftItemsString('2 items left', 'All todos un-completed, left list cound is 2');
+	this.assertLeftItemsCount(2, 'All todos un-completed, left list cound is 2');
 });
 
 casper.run(function () {
