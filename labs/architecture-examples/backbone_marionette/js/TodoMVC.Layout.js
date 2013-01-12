@@ -1,79 +1,100 @@
-TodoMVC.module('Layout', function(Layout, App, Backbone, Marionette, $, _) {
+/*global TodoMVC */
+'use strict';
 
-	// Layout Header View
-	// ------------------
+TodoMVC.module('Layout', function (Layout, App, Backbone) {
 
-	Layout.Header = Backbone.Marionette.ItemView.extend({
-		template: '#template-header',
+    // Layout Header View
+    // ------------------
 
-		// UI bindings create cached attributes that
-		// point to jQuery selected objects
-		ui: {
-			input: '#new-todo'
-		},
+    Layout.Header = Backbone.Marionette.ItemView.extend({
+        template: '#template-header',
 
-		events : {
-			'keypress #new-todo': 'onInputKeypress'
-		},
+        // UI bindings create cached attributes that
+        // point to jQuery selected objects
+        ui: {
+            input: '#new-todo'
+        },
 
-		onInputKeypress: function(e) {
-			var ENTER_KEY = 13;
-			var todoText = this.ui.input.val().trim();
+        events: {
+            'keypress #new-todo': 'onInputKeypress'
+        },
 
-			if ( e.which === ENTER_KEY && todoText ) {
-				this.collection.create({
-					title: todoText
-				});
-				this.ui.input.val('');
-			}
-		}
-	});
+        onInputKeypress: function (e) {
+            var ENTER_KEY = 13,
+            todoText = this.ui.input.val().trim();
 
-	// Layout Footer View
-	// ------------------
+            if (e.which === ENTER_KEY && todoText) {
+                this.collection.create({
+                    title: todoText
+                });
+                this.ui.input.val('');
+            }
+        }
+    });
 
-	Layout.Footer = Backbone.Marionette.Layout.extend({
-		template: '#template-footer',
+    // Layout Footer View
+    // ------------------
 
-		// UI bindings create cached attributes that
-		// point to jQuery selected objects
-		ui: {
-			count: '#todo-count strong',
-			filters: '#filters a'
-		},
+    Layout.Footer = Backbone.Marionette.Layout.extend({
+        template: '#template-footer',
 
-		events: {
-			'click #clear-completed': 'onClearClick'
-		},
+        // UI bindings create cached attributes that
+        // point to jQuery selected objects
+        ui: {
+            count: '#todo-count strong',
+            itemsString: '#todo-count span',
+            filters: '#filters a',
+            clearCompleted: '#clear-completed'
+        },
 
-		initialize : function() {
-			this.bindTo(App.vent, 'todoList:filter', this.updateFilterSelection, this);
-			this.bindTo(this.collection, 'all', this.updateCount, this);
-		},
+        events: {
+            'click #clear-completed': 'onClearClick'
+        },
 
-		onRender: function() {
-			this.updateCount();
-		},
+        initialize: function () {
+            this.bindTo(App.vent, 'todoList:filter', this.updateFilterSelection, this);
+            this.bindTo(this.collection, 'all', this.updateCount, this);
+        },
 
-		updateCount: function() {
-			var count = this.collection.getActive().length;
-			this.ui.count.html(count);
-			this.$el.parent().toggle(count > 0);
-		},
+        onRender: function () {
+            this.updateCount();
+        },
 
-		updateFilterSelection : function(filter) {
-			this.ui.filters
+        updateCount: function () {
+            var count = this.collection.getActive().length,
+                length = this.collection.length,
+                completed = length - count;
+            this.ui.count.html(count);
+            if (count !== 1) {
+                this.ui.itemsString.html(' items left');
+            } else {
+                this.ui.itemsString.html(' item left');
+            }
+
+            this.$el.parent().toggle(length > 0);
+
+            if (completed > 0) {
+                this.ui.clearCompleted.show();
+                this.ui.clearCompleted.html('Clear completed (' + completed + ')');
+            } else {
+                this.ui.clearCompleted.hide();
+            }
+
+        },
+
+        updateFilterSelection: function (filter) {
+            this.ui.filters
 				.removeClass('selected')
 				.filter('[href="#' + filter + '"]')
 				.addClass('selected');
-		},
+        },
 
-		onClearClick: function() {
-			var completed = this.collection.getCompleted();
-			completed.forEach(function destroy(todo) {
-				todo.destroy();
-			});
-		}
-	});
+        onClearClick: function () {
+            var completed = this.collection.getCompleted();
+            completed.forEach(function destroy(todo) {
+                todo.destroy();
+            });
+        }
+    });
 
 });

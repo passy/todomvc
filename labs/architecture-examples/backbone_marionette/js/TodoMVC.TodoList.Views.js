@@ -1,120 +1,138 @@
-TodoMVC.module('TodoList.Views', function(Views, App, Backbone, Marionette, $, _) {
+/*global TodoMVC */
+'use strict';
 
-	// Todo List Item View
-	// -------------------
-	//
-	// Display an individual todo item, and respond to changes
-	// that are made to the item, including marking completed.
+TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) {
 
-	Views.ItemView = Marionette.ItemView.extend({
-		tagName: 'li',
-			template: '#template-todoItemView',
+    // Todo List Item View
+    // -------------------
+    //
+    // Display an individual todo item, and respond to changes
+    // that are made to the item, including marking completed.
 
-			ui: {
-				edit: '.edit'
-			},
+    Views.ItemView = Marionette.ItemView.extend({
+        tagName: 'li',
+        template: '#template-todoItemView',
 
-			events : {
-				'click .destroy': 'destroy',
-				'dblclick label': 'onEditClick',
-				'keypress .edit': 'onEditKeypress',
-				'click .toggle' : 'toggle'
-			},
+        ui: {
+            edit: '.edit'
+        },
 
-			initialize: function() {
-				this.bindTo(this.model, 'change', this.render, this);
-			},
+        events: {
+            'click .destroy': 'destroy',
+            'dblclick label': 'onEditClick',
+            'keydown .edit': 'onEditKeypress',
+            'focusout .edit': 'onEditFocusout',
+            'click .toggle': 'toggle'
+        },
 
-			onRender: function() {
-				this.$el.removeClass('active completed');
+        initialize: function () {
+            this.bindTo(this.model, 'change', this.render, this);
+        },
 
-				if (this.model.get('completed')) {
-					this.$el.addClass('completed');
-				} else {
-					this.$el.addClass('active');
-				}
-			},
+        onRender: function () {
+            this.$el.removeClass('active completed');
 
-			destroy: function() {
-				this.model.destroy();
-			},
+            if (this.model.get('completed')) {
+                this.$el.addClass('completed');
+            } else {
+                this.$el.addClass('active');
+            }
+        },
 
-			toggle: function() {
-				this.model.toggle().save();
-			},
+        destroy: function () {
+            this.model.destroy();
+        },
 
-			onEditClick: function() {
-				this.$el.addClass('editing');
-				this.ui.edit.focus();
-			},
+        toggle: function () {
+            this.model.toggle().save();
+        },
 
-			onEditKeypress: function(e) {
-				var ENTER_KEY = 13;
-				var todoText = this.ui.edit.val().trim();
+        onEditClick: function () {
+            this.$el.addClass('editing');
+            this.ui.edit.focus();
+            this.ui.edit.val(this.ui.edit.val());
+        },
 
-				if ( e.which === ENTER_KEY && todoText ) {
-					this.model.set('title', todoText).save();
-					this.$el.removeClass('editing');
-				}
-			}
-	});
+        onEditFocusout: function () {
+            var todoText = this.ui.edit.val().trim();
+            if (todoText) {
+                this.model.set('title', todoText).save();
+                this.$el.removeClass('editing');
+            } else {
+                this.destroy();
+            }
+        },
 
-	// Item List View
-	// --------------
-	//
-	// Controls the rendering of the list of items, including the
-	// filtering of activs vs completed items for display.
+        onEditKeypress: function (e) {
+            var ENTER_KEY = 13, ESC_KEY = 27;
 
-	Views.ListView = Backbone.Marionette.CompositeView.extend({
-		template: '#template-todoListCompositeView',
-			itemView: Views.ItemView,
-			itemViewContainer: '#todo-list',
+            if (e.which === ENTER_KEY) {
+                this.onEditFocusout();
+                return;
+            }
 
-			ui: {
-				toggle: '#toggle-all'
-			},
+            if (e.which === ESC_KEY) {
+                this.$el.removeClass('editing');
+            }
+        }
+    });
 
-			events : {
-				'click #toggle-all': 'onToggleAllClick'
-			},
+    // Item List View
+    // --------------
+    //
+    // Controls the rendering of the list of items, including the
+    // filtering of activs vs completed items for display.
 
-			initialize: function() {
-				this.bindTo(this.collection, 'all', this.update, this);
-			},
+    Views.ListView = Backbone.Marionette.CompositeView.extend({
+        template: '#template-todoListCompositeView',
+        itemView: Views.ItemView,
+        itemViewContainer: '#todo-list',
 
-			onRender: function() {
-				this.update();
-			},
+        ui: {
+            toggle: '#toggle-all'
+        },
 
-			update: function() {
-				function reduceCompleted(left, right) {
-					return left && right.get('completed');
-				}
+        events: {
+            'click #toggle-all': 'onToggleAllClick'
+        },
 
-				var allCompleted = this.collection.reduce(reduceCompleted,true);
+        initialize: function () {
+            this.bindTo(this.collection, 'all', this.update, this);
+        },
 
-				this.ui.toggle.prop('checked', allCompleted);
-				this.$el.parent().toggle(!!this.collection.length);
-			},
+        onRender: function () {
+            this.update();
+        },
 
-			onToggleAllClick: function(e) {
-				var isChecked = e.currentTarget.checked;
+        update: function () {
+            function reduceCompleted(left, right) {
+                return left && right.get('completed');
+            }
 
-				this.collection.each(function(todo){
-					todo.save({'completed': isChecked});
-				});
-			}
-	});
+            var allCompleted = this.collection.reduce(reduceCompleted, true);
 
-	// Application Event Handlers
-	// --------------------------
-	//
-	// Handler for filtering the list of items by showing and
-	// hiding through the use of various CSS classes
+            this.ui.toggle.prop('checked', allCompleted);
+            this.$el.parent().toggle(!!this.collection.length);
+        },
 
-	App.vent.on('todoList:filter', function(filter) {
-		filter = filter || 'all';
-		$('#todoapp').attr('class', 'filter-' + filter);
-	});
+        onToggleAllClick: function (e) {
+            var isChecked = e.currentTarget.checked;
+
+            this.collection.each(function (todo) {
+                todo.save({ 'completed': isChecked });
+            });
+        }
+    });
+
+    // Application Event Handlers
+    // --------------------------
+    //
+    // Handler for filtering the list of items by showing and
+    // hiding through the use of various CSS classes
+
+    App.vent.on('todoList:filter', function (filter) {
+        filter = filter || 'all';
+        $('#todoapp').attr('class', 'filter-' + filter);
+    });
 
 });
