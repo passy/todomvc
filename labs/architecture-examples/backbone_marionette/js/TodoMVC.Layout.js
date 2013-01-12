@@ -65,11 +65,7 @@ TodoMVC.module('Layout', function (Layout, App, Backbone) {
                 length = this.collection.length,
                 completed = length - count;
             this.ui.count.html(count);
-            if (count !== 1) {
-                this.ui.itemsString.html(' items left');
-            } else {
-                this.ui.itemsString.html(' item left');
-            }
+            this.ui.itemsString.html(' ' + (count === 1 ? 'item' : 'items') + ' left');
 
             this.$el.parent().toggle(length > 0);
 

@@ -35,7 +35,7 @@ TodoMVC.module('Todos', function (Todos, App, Backbone) {
     Todos.TodoList = Backbone.Collection.extend({
         model: Todos.Todo,
 
-        localStorage: new Backbone.LocalStorage('todos-backbone'),
+        localStorage: new Backbone.LocalStorage('todos-backbone-marionette'),
 
         getCompleted: function () {
             return this.filter(this._isCompleted);
