@@ -17,7 +17,12 @@ describe( 'Todo Controller', function () {
 	} );
 
 	it( 'should not have any Todos on start', function () {
-		expect( scope.todos.length ).toBe(0);
+		expect( scope.todos.length ).toBe( 0 );
+	} );
+
+	it( 'should have all Todos completed', function () {
+		scope.$digest();
+		expect( scope.allChecked ).toBeTruthy();
 	} );
 
 	describe( 'the path', function () {
@@ -30,7 +35,7 @@ describe( 'Todo Controller', function () {
 				ctrl = $controller( 'TodoCtrl', {
 					$scope: scope,
 					$location: {
-						path: function () { return '/active' }
+						path: function () { return '/active'; }
 					}
 				} );
 
@@ -55,7 +60,19 @@ describe( 'Todo Controller', function () {
 	} );
 
 	describe( 'having some saved Todos', function () {
-		var todoList = [ {
+		var todoList,
+			todoStorage = {
+			storage: {},
+			get: function () {
+				return this.storage;
+			},
+			put: function ( value ) {
+				this.storage = value;
+			}
+		};
+
+		beforeEach( inject( function ($controller) {
+			todoList = [ {
 					'title': 'Uncompleted Item 0',
 					'completed': false
 				}, {
@@ -70,18 +87,9 @@ describe( 'Todo Controller', function () {
 				}, {
 					'title': 'Completed Item 1',
 					'completed': true
-		} ],
-		todoStorage = {
-			storage: {},
-			get: function () {
-				return todoList;
-			},
-			put: function ( value ) {
-				this.storage = value;
-			}
-		};
+			} ];
 
-		beforeEach( inject( function ($controller) {
+			todoStorage.storage = todoList;
 			ctrl = $controller( 'TodoCtrl', {
 				$scope: scope,
 				todoStorage: todoStorage
@@ -90,14 +98,34 @@ describe( 'Todo Controller', function () {
 		} ) );
 
 		it( 'should count Todos correctly', function () {
-			expect( scope.todos.length ).toBe(5);
-			expect( scope.remainingCount ).toBe(3);
-			expect( scope.doneCount ).toBe(2);
+			expect( scope.todos.length ).toBe( 5 );
+			expect( scope.remainingCount ).toBe( 3 );
+			expect( scope.doneCount ).toBe( 2 );
 			expect( scope.allChecked ).toBeFalsy();
 		} );
 
 		it( 'should save Todos to local storage', function () {
-			expect( todoStorage.storage.length ).toBe(5);
+			expect( todoStorage.storage.length ).toBe( 5 );
+		} );
+
+		it ( 'should remove Todos w/o title on saving', function () {
+			var todo = todoList[2],
+				orgTitle = todo.title;
+			todo.title = '';
+
+			scope.doneEditing( todo );
+			expect ( scope.todos.length ).toBe( 4 );
+		} );
+
+		it ( 'clearDoneTodos() should clear completed Todos', function () {
+			scope.clearDoneTodos();
+			expect ( scope.todos.length ).toBe( 3 );
+		} );
+
+		it ( 'markAll() should mark all Todos completed', function () {
+			scope.markAll();
+			scope.$digest();
+			expect ( scope.doneCount ).toBe( 5 );
 		} );
 	} );
 });
