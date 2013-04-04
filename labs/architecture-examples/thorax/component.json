@@ -1,0 +1,12 @@
+{
+  "name": "todomvc-thorax",
+  "version": "0.0.0",
+  "dependencies": {
+    "backbone": "~0.9.9",
+    "underscore": "~1.4.3",
+    "jquery": "~1.9.0",
+    "todomvc-common": "~0.1.3",
+    "backbone.localStorage": "~1.1.0",
+    "thorax": "~2.0.0rc3"
+  }
+}
