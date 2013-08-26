@@ -32,53 +32,53 @@ TodoMVC.module('Layout', function (Layout, App, Backbone) {
 
 	// Layout Footer View
 	// ------------------
-	Layout.Footer = Backbone.Marionette.Layout.extend({
+	Layout.Footer = Backbone.Marionette.ItemView.extend({
 		template: '#template-footer',
 
 		// UI bindings create cached attributes that
 		// point to jQuery selected objects
 		ui: {
-			count: '#todo-count strong',
-			itemsString: '#todo-count span',
-			filters: '#filters a',
-			clearCompleted: '#clear-completed'
+			filters: '#filters a'
 		},
 
 		events: {
 			'click #clear-completed': 'onClearClick'
 		},
 
+		collectionEvents: {
+			'all': 'render'
+		},
+
+		templateHelpers: {
+			activeCountLabel: function () {
+				return (this.activeCount === 1 ? 'item' : 'items') + ' left';
+			}
+		},
+
 		initialize: function () {
 			this.listenTo(App.vent, 'todoList:filter', this.updateFilterSelection, this);
-			this.listenTo(this.collection, 'all', this.updateCount, this);
+		},
+
+		serializeData: function () {
+			var active = this.collection.getActive().length;
+			var total = this.collection.length;
+
+			return {
+				activeCount: active,
+				totalCount: total,
+				completedCount: total - active
+			};
 		},
 
 		onRender: function () {
-			this.updateCount();
+			this.$el.parent().toggle(this.collection.length > 0);
+			this.updateFilterSelection();
 		},
 
-		updateCount: function () {
-			var count = this.collection.getActive().length;
-			var length = this.collection.length;
-			var completed = length - count;
-
-			this.ui.count.html(count);
-			this.ui.itemsString.html(' ' + (count === 1 ? 'item' : 'items') + ' left');
-			this.$el.parent().toggle(length > 0);
-
-			if (completed > 0) {
-				this.ui.clearCompleted.show();
-				this.ui.clearCompleted.html('Clear completed (' + completed + ')');
-			} else {
-				this.ui.clearCompleted.hide();
-			}
-
-		},
-
-		updateFilterSelection: function (filter) {
+		updateFilterSelection: function () {
 			this.ui.filters
 				.removeClass('selected')
-				.filter('[href="#' + filter + '"]')
+				.filter('[href="' + (location.hash || '#') + '"]')
 				.addClass('selected');
 		},
 

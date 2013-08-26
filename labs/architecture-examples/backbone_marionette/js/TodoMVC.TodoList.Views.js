@@ -23,8 +23,8 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 			'click .toggle': 'toggle'
 		},
 
-		initialize: function () {
-			this.listenTo(this.model, 'change', this.render, this);
+		modelEvents: {
+			'change': 'render'
 		},
 
 		onRender: function () {
@@ -70,6 +70,7 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 			}
 
 			if (e.which === ESC_KEY) {
+				this.ui.edit.val(this.model.get('title'));
 				this.$el.removeClass('editing');
 			}
 		}
@@ -93,8 +94,8 @@ TodoMVC.module('TodoList.Views', function (Views, App, Backbone, Marionette, $) 
 			'click #toggle-all': 'onToggleAllClick'
 		},
 
-		initialize: function () {
-			this.listenTo(this.collection, 'all', this.update, this);
+		collectionEvents: {
+			'all': 'update'
 		},
 
 		onRender: function () {

@@ -20,9 +20,7 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 	$scope.location = $location;
 
 	$scope.$watch('location.path()', function (path) {
-		$scope.statusFilter = (path === '/active') ?
-			{ completed: false } : (path === '/completed') ?
-			{ completed: true } : null;
+		$scope.statusFilter = { '/active': {completed: false}, '/completed': {completed: true} }[path];
 	});
 
 	$scope.$watch('remainingCount == 0', function (val) {
@@ -30,12 +28,13 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 	});
 
 	$scope.addTodo = function () {
-		if ($scope.newTodo.length === 0) {
+		var newTodo = $scope.newTodo.trim();
+		if (newTodo.length === 0) {
 			return;
 		}
 
 		todos.push({
-			title: $scope.newTodo,
+			title: newTodo,
 			completed: false
 		});
 		todoStorage.put(todos);
@@ -50,6 +49,7 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 
 	$scope.doneEditing = function (todo) {
 		$scope.editedTodo = null;
+		todo.title = todo.title.trim();
 
 		if (!todo.title) {
 			$scope.removeTodo(todo);
@@ -65,11 +65,7 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 	};
 
 	$scope.todoCompleted = function (todo) {
-		if (todo.completed) {
-			$scope.remainingCount--;
-		} else {
-			$scope.remainingCount++;
-		}
+		$scope.remainingCount += todo.completed ? -1 : 1;
 		todoStorage.put(todos);
 	};
 

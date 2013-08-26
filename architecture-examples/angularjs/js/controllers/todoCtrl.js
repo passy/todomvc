@@ -1,4 +1,4 @@
-/*global todomvc */
+/*global todomvc, angular */
 'use strict';
 
 /**
@@ -12,11 +12,13 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 	$scope.newTodo = '';
 	$scope.editedTodo = null;
 
-	$scope.$watch('todos', function () {
-		$scope.remainingCount = filterFilter(todos, {completed: false}).length;
+	$scope.$watch('todos', function (newValue, oldValue) {
+		$scope.remainingCount = filterFilter(todos, { completed: false }).length;
 		$scope.completedCount = todos.length - $scope.remainingCount;
 		$scope.allChecked = !$scope.remainingCount;
-		todoStorage.put(todos);
+		if (newValue !== oldValue) { // This prevents unneeded calls to the local storage
+			todoStorage.put(todos);
+		}
 	}, true);
 
 	if ($location.path() === '') {
@@ -32,12 +34,13 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 	});
 
 	$scope.addTodo = function () {
-		if (!$scope.newTodo.length) {
+		var newTodo = $scope.newTodo.trim();
+		if (!newTodo.length) {
 			return;
 		}
 
 		todos.push({
-			title: $scope.newTodo,
+			title: newTodo,
 			completed: false
 		});
 
@@ -46,13 +49,22 @@ todomvc.controller('TodoCtrl', function TodoCtrl($scope, $location, todoStorage,
 
 	$scope.editTodo = function (todo) {
 		$scope.editedTodo = todo;
+		// Clone the original todo to restore it on demand.
+		$scope.originalTodo = angular.extend({}, todo);
 	};
 
 	$scope.doneEditing = function (todo) {
 		$scope.editedTodo = null;
+		todo.title = todo.title.trim();
+
 		if (!todo.title) {
 			$scope.removeTodo(todo);
 		}
+	};
+
+	$scope.revertEditing = function (todo) {
+		todos[todos.indexOf(todo)] = $scope.originalTodo;
+		$scope.doneEditing($scope.originalTodo);
 	};
 
 	$scope.removeTodo = function (todo) {

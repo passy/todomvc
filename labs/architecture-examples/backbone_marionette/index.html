@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-framework="marionettejs">
 	<head>
 		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>Marionette • TodoMVC</title>
 		<link rel="stylesheet" href="bower_components/todomvc-common/base.css">
 		<link rel="stylesheet" href="css/app.css">
@@ -23,7 +23,9 @@
 			<p>Further variations on the Backbone.Marionette app are also <a href="https://github.com/marionettejs/backbone.marionette/wiki/Projects-and-websites-using-marionette">available</a>.</p>
 		</footer>
 		<script type="text/html" id="template-footer">
-			<span id="todo-count"><strong></strong><span></span></span>
+			<span id="todo-count">
+				<strong><%= activeCount %></strong> <%= activeCountLabel() %>
+			</span>
 			<ul id="filters">
 				<li>
 					<a href="#">All</a>
@@ -35,7 +37,9 @@
 					<a href="#completed">Completed</a>
 				</li>
 			</ul>
-			<button id="clear-completed"></button>
+			<button id="clear-completed" <% if (!completedCount) { %>class="hidden"<% } %>>
+				Clear completed (<%= completedCount %>)
+			</button>
 		</script>
 		<script type="text/html" id="template-header">
 			<h1>todos</h1>

@@ -1,20 +1,27 @@
 # Changelog
 
-## 1.2 - TBA
+## 1.2 - 2013-08-06
 
 - New since 1.1:
+    - Polymer
     - Flight
     - DeftJS + ExtJS
     - Aria Templates
     - Enyo + Backbone.js
+    - React
+    - SAPUI5
+    - AngularJS + Firebase
 
 - Updates since 1.1:
     - Backbone 1.0
+    - cujoJS got updated
     - Kendo UI Spring 2013 release
     - Maria graduated from labs
+    - TroopJS 2.0
 
 - The GWT example implemented routing
 - The sammy.js example implemented routing
+- Removed Ember.js + require.js example
 
 ## 1.1 - 2013-02-14
 
