@@ -7,6 +7,9 @@
     - Exoskeleton
     - Atma.js
 
+- Updates since 1.2:
+    - AngularJS 1.2
+
 ## 1.2 - 2013-08-06
 
 - New since 1.1:
