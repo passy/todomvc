@@ -7,4 +7,13 @@
  *
  * @type {angular.Module}
  */
-var todomvc = angular.module('todomvc', []);
+var todomvc = angular.module('todomvc', ['ngRoute'])
+	.config(function ($routeProvider) {
+		$routeProvider.when('/', {
+			controller: 'TodoCtrl'
+		}).when('/:status', {
+			controller: 'TodoCtrl'
+		}).otherwise({
+			redirectTo: '/'
+		});
+	}).run(function ($route) {});
